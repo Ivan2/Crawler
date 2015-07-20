@@ -21,7 +21,7 @@ public class SaveTest {
 		saveInFileManager.save(goalPostCount);
 
 		// assert
-		FileInputStream fis = new FileInputStream(gitDirectory+"/result.txt");
+		FileInputStream fis = new FileInputStream(gitDirectory+"/data");
 		byte[] postCount = new byte[7];
 		fis.read(postCount, 0, 7);
 		Assert.assertArrayEquals(postCount, goalPostCount);
