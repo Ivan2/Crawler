@@ -32,5 +32,7 @@
 	</head>
 	<body>
 		<div id='chart' style='width: 1200px; height: 500px;'></div>
+		<br>
+		test
 	</body>
 </html>
