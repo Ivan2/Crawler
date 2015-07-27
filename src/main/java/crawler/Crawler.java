@@ -1,43 +1,31 @@
 package crawler;
 
-import net.DataLoader;
-import net.IDataLoader;
+import data.Data;
+import db.LoadDBManager;
+import load.ILoadDataManager;
+
+import java.util.Date;
 
 public class Crawler {
-	
-	private byte[] postCount;
-	
+
+	private long[][] averageCount;
+	private String update;
+
 	public Crawler() {
-		IDataLoader dataLoader = new DataLoader();
-		postCount = dataLoader.load();
-	}
-	
-	public byte getMondayPostCount() {
-		return postCount[1];
+		ILoadDataManager loadDataManager = new LoadDBManager();
+		Data data = loadDataManager.loadData();
+
+		averageCount = Calc.calcAverageCount(data);
+
+		update = new Date(data.getUpdate()).toString();
 	}
 
-	public byte getTuesdayPostCount() {
-		return postCount[2];
+	public long[][] getAverageCount() {
+		return averageCount;
 	}
 
-	public byte getWednesdayPostCount() {
-		return postCount[3];
+	public String getUpdate() {
+		return update;
 	}
 
-	public byte getThursdayPostCount() {
-		return postCount[4];
-	}
-
-	public byte getFridayPostCount() {
-		return postCount[5];
-	}
-
-	public byte getSaturdayPostCount() {
-		return postCount[6];
-	}
-
-	public byte getSundayPostCount() {
-		return postCount[0];
-	}
-	
 }
