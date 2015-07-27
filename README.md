@@ -1,2 +1,1 @@
-# Crawler
-http://crawler-crawler3.rhcloud.com/
+http://crawler-isproject.rhcloud.com/

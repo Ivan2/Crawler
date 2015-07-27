@@ -6,7 +6,37 @@
 
     <groupId>com.crawler</groupId>
     <artifactId>crawler</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1</version>
 
+    <build>
+        <defaultGoal>package</defaultGoal>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20141113</version>
+        </dependency>
+
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.1-901.jdbc4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>3.5.4</version>
+        </dependency>
+    </dependencies>
 
 </project>
