@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <%@ page contentType='text/html;charset=UTF-8' language='java' %>
 <%@ page import ="crawler.Crawler" %>
+<%@ page import ="data.*" %>
 <%
 Crawler crawler = new Crawler();
-long[][] averageCount = crawler.getAverageCount();
-String update = crawler.getUpdate();
+AverageCount[] averageCount = crawler.getAverageCountArray();
+Info info = crawler.getInfo();
 %>
 <html>
 	<head>
@@ -17,38 +18,38 @@ String update = crawler.getUpdate();
 				var data = google.visualization.arrayToDataTable([
 					['', 'Комментарии', 'Лайки', 'Репосты'],
 					['Понедельник',
-						<%= averageCount[1][0] %>,
-						<%= averageCount[1][1] %>,
-						<%= averageCount[1][2] %>],
+						<%= averageCount[1].getCommentsCount() %>,
+						<%= averageCount[1].getLikesCount() %>,
+						<%= averageCount[1].getRepostsCount() %>],
 					['Вторник',
-                        <%= averageCount[2][0] %>,
-                        <%= averageCount[2][1] %>,
-                        <%= averageCount[2][2] %>],
+						<%= averageCount[2].getCommentsCount() %>,
+						<%= averageCount[2].getLikesCount() %>,
+						<%= averageCount[2].getRepostsCount() %>],
 					['Среда',
-                        <%= averageCount[3][0] %>,
-                        <%= averageCount[3][1] %>,
-                        <%= averageCount[3][2] %>],
+						<%= averageCount[3].getCommentsCount() %>,
+						<%= averageCount[3].getLikesCount() %>,
+						<%= averageCount[3].getRepostsCount() %>],
 					['Четверг',
-                        <%= averageCount[4][0] %>,
-                        <%= averageCount[4][1] %>,
-                        <%= averageCount[4][2] %>],
+						<%= averageCount[4].getCommentsCount() %>,
+						<%= averageCount[4].getLikesCount() %>,
+						<%= averageCount[4].getRepostsCount() %>],
 					['Пятница',
-                        <%= averageCount[5][0] %>,
-                        <%= averageCount[5][1] %>,
-                        <%= averageCount[5][2] %>],
+						<%= averageCount[5].getCommentsCount() %>,
+						<%= averageCount[5].getLikesCount() %>,
+						<%= averageCount[5].getRepostsCount() %>],
 					['Суббота',
-                        <%= averageCount[6][0] %>,
-                        <%= averageCount[6][1] %>,
-                        <%= averageCount[6][2] %>],
+						<%= averageCount[6].getCommentsCount() %>,
+						<%= averageCount[6].getLikesCount() %>,
+						<%= averageCount[6].getRepostsCount() %>],
 					['Воскресенье',
-                        <%= averageCount[0][0] %>,
-                        <%= averageCount[0][1] %>,
-                        <%= averageCount[0][2] %>],
+						<%= averageCount[0].getCommentsCount() %>,
+						<%= averageCount[0].getLikesCount() %>,
+						<%= averageCount[0].getRepostsCount() %>],
 				]);
 				var options = {
 					title: 'Среднее количество комментариев, лайков и репостов в группе "Типичный программист" в ВКонтакте по дням недели',
 					hAxis: {title: 'День недели'},
-					vAxis: {title: 'Количество постов'}
+					vAxis: {title: 'Количество комментариев, лайков и репостов'}
 				};
 				var chart = new google.visualization.ColumnChart(document.getElementById('chart'));
 				chart.draw(data, options);
@@ -56,7 +57,10 @@ String update = crawler.getUpdate();
 		</script>
 	</head>
 	<body>
-		Дата последнего обновления: <%= update %>
+		Дата последнего обновления: <%= info.getUpdate() %>
+		<br>
+		Количество обработанных постов: <%= info.getPostCount() %>
+		<br>
 		<br>
 		<div id='chart' style='width: 1200px; height: 500px;'></div>
 	</body>

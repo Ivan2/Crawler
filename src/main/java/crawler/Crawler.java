@@ -1,31 +1,28 @@
 package crawler;
 
-import data.Data;
-import db.LoadDBManager;
+import data.AverageCount;
+import data.Info;
+import db.PostgresQLManager;
 import load.ILoadDataManager;
-
-import java.util.Date;
 
 public class Crawler {
 
-	private long[][] averageCount;
-	private String update;
+	private AverageCount[] averageCountArray;
+	private Info info;
 
 	public Crawler() {
-		ILoadDataManager loadDataManager = new LoadDBManager();
-		Data data = loadDataManager.loadData();
-
-		averageCount = Calc.calcAverageCount(data);
-
-		update = new Date(data.getUpdate()).toString();
+		ILoadDataManager loadDataManager = new PostgresQLManager();
+		loadDataManager.connect();
+		averageCountArray = loadDataManager.loadAverageCount();
+		info = loadDataManager.loadInfo();
 	}
 
-	public long[][] getAverageCount() {
-		return averageCount;
+	public AverageCount[] getAverageCountArray() {
+		return averageCountArray;
 	}
 
-	public String getUpdate() {
-		return update;
+	public Info getInfo() {
+		return info;
 	}
 
 }

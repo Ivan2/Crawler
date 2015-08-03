@@ -1,9 +1,14 @@
 package load;
 
-import data.Data;
+import data.AverageCount;
+import data.Info;
 
 public interface ILoadDataManager {
 
-	Data loadData();
+	void connect();
+
+	AverageCount[] loadAverageCount();
+
+	Info loadInfo();
 
 }
