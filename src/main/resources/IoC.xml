@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="IPostInfo"
+          class="classes.data.PostInfo"
+          scope="prototype"/>
+
+    <bean id="IDateTime"
+          class="classes.date.DateTime"
+          scope="prototype"/>
+
+    <bean id="FinalDB"
+          class="classes.db.FinalPostgresQLDB"
+          scope="singleton"/>
+
+    <bean id="IntermediateDB"
+          class="classes.db.IntermediatePostgresQLDB"
+          scope="singleton"/>
+
+    <bean id="IJSONParser"
+          class="classes.vk.JSONWallParser"
+          scope="prototype"/>
+
+    <bean id="IServices"
+          class="classes.services.Services"
+          scope="singleton"/>
+
+    <bean id="ISettings"
+          class="classes.settings.Settings"
+          scope="singleton"/>
+
+    <bean id="ISettingsLoadManager"
+          class="classes.settings.SettingsLoadManagerFromFile"
+          scope="prototype"/>
+
+    <bean id="IVkLoader"
+          class="classes.vk.VkLoader"
+          scope="prototype"/>
+
+    <bean id="IVkWallLoader"
+          class="classes.vk.VkWallLoader"
+          scope="prototype"/>
+
+</beans>
