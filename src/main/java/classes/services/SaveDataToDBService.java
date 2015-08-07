@@ -1,56 +1,53 @@
 package classes.services;
 
+import abstractions.data.IPostInfo;
+import abstractions.db.IntermediateDB;
+import abstractions.queue.IMessage;
+import abstractions.queue.IQueue;
+import abstractions.services.Service;
 import classes.crawler.Control;
-import classes.ioc.IoCAdapter;
-import com.rabbitmq.client.QueueingConsumer;
-import interfaces_abstracts.data.IPostInfo;
-import interfaces_abstracts.db.IntermediateDB;
-import interfaces_abstracts.services.Service;
+import classes.service_locator.ServiceLocatorAdapter;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 public class SaveDataToDBService extends Service {
 
 	private IntermediateDB db;
 
-	public SaveDataToDBService(IntermediateDB db, String rabbitMQHost,
-	                           String consumerQName, String producerQName)
-			throws TimeoutException, IOException {
+	public SaveDataToDBService(IntermediateDB db, IQueue consumerQueue,
+	                           IQueue producerQueue) {
 
-		super(rabbitMQHost, consumerQName, producerQName);
+		super(consumerQueue, producerQueue);
 		this.db = db;
 		start();
 	}
 
 	@Override
-	public void run() {
-		while (true) {
-			try {
-				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-				IPostInfo postInfo = IoCAdapter.getInstance().getIPostInfoObject();
-				postInfo.parseByteArray(delivery.getBody());
+	protected void threadBody() {
+		try {
+			IPostInfo postInfo = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
+			IMessage message = consumerQueue.receiveMessage();
+			postInfo.parseByteArray(message.getBytes());
 
-				int updateCount = db.setCommentsLikesRepostsCount(postInfo);
-				if (updateCount == 0) {
-					db.addCommentsLikesRepostsCount(postInfo);
-					Control.log("Save post to DB");
-				} else
-					Control.log("Update post in DB");
+			int updateCount = db.setCommentsLikesRepostsCount(postInfo);
+			if (updateCount == 0) {
+				db.addCommentsLikesRepostsCount(postInfo);
+				Control.info(getClass().getName(), "Save post to DB");
+			} else
+				Control.info(getClass().getName(), "Update post in DB");
 
-				consumerChannel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+			consumerQueue.ackMessage(message.getTag());
 
-			} catch (InterruptedException e) {
-				Control.log(e.toString());
-			} catch (IOException e) {
-				Control.log(e.toString());
-			}
+		} catch (InterruptedException e) {
+			Control.error(getClass().getName(), e.toString());
+		} catch (IOException e) {
+			Control.error(getClass().getName(), e.toString());
 		}
 	}
 
 	@Override
-	public Service copyService() throws TimeoutException, IOException {
-		return new SaveDataToDBService(db, rabbitMQHost, consumerQName,	producerQName);
+	public Service copyService() {
+		return new SaveDataToDBService(db, consumerQueue, producerQueue);
 	}
 
 }

@@ -1,8 +1,8 @@
 package classes.vk;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.data.IPostInfo;
-import interfaces_abstracts.json.IJSONParser;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.data.IPostInfo;
+import abstractions.json.IJSONParser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,13 +20,13 @@ public class JSONWallParserTest {
 
 		IPostInfo[] expectedPostInfo = new IPostInfo[2];
 
-		expectedPostInfo[0] = IoCAdapter.getInstance().getIPostInfoObject();
-		expectedPostInfo[1] = IoCAdapter.getInstance().getIPostInfoObject();
+		expectedPostInfo[0] = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
+		expectedPostInfo[1] = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
 
 		expectedPostInfo[0].setParams(1, 1000, 100, 200, 300);
 		expectedPostInfo[1].setParams(2, 2000, 400, 500, 600);
 
-		IJSONParser parser = IoCAdapter.getInstance().getIJSONParserObject();
+		IJSONParser parser = ServiceLocatorAdapter.getInstance().getObject(IJSONParser.class);
 
 		//Act
 		IPostInfo[] postInfo = parser.parse(jsonWall);

@@ -1,7 +1,7 @@
 package classes.data.post_info;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.data.IPostInfo;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.data.IPostInfo;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public class getDayOfWeekTest {
 		long commentsCount = 3;
 		long likesCount = 4;
 		long repostsCount = 5;
-		IPostInfo postInfo = IoCAdapter.getInstance().getIPostInfoObject();
+		IPostInfo postInfo = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
 		postInfo.setParams(id, date, commentsCount, likesCount, repostsCount);
 
 		//Act
@@ -33,7 +33,7 @@ public class getDayOfWeekTest {
 		long commentsCount = 3;
 		long likesCount = 4;
 		long repostsCount = 5;
-		IPostInfo postInfo = IoCAdapter.getInstance().getIPostInfoObject();
+		IPostInfo postInfo = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
 		postInfo.setParams(id, date, commentsCount, likesCount, repostsCount);
 
 		//Act
@@ -52,7 +52,7 @@ public class getDayOfWeekTest {
 		long commentsCount = 3;
 		long likesCount = 4;
 		long repostsCount = 5;
-		IPostInfo postInfo = IoCAdapter.getInstance().getIPostInfoObject();
+		IPostInfo postInfo = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
 		postInfo.setParams(id, date, commentsCount, likesCount, repostsCount);
 
 		//Act

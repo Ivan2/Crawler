@@ -1,7 +1,7 @@
 package classes.vk;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.vk.*;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.vk.*;
 
 public class VkWallLoader implements IVkWallLoader {
 
@@ -11,7 +11,7 @@ public class VkWallLoader implements IVkWallLoader {
 
 	public String loadWall(String wallID) {
 		String params = String.format(PARAMS, wallID, POST_COUNT);
-		IVkLoader loader = IoCAdapter.getInstance().getIVkLoaderObject();
+		IVkLoader loader = ServiceLocatorAdapter.getInstance().getObject(IVkLoader.class);
 		return loader.loadData(METHOD, params);
 	}
 

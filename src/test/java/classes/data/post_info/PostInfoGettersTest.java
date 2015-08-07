@@ -1,7 +1,7 @@
 package classes.data.post_info;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.data.IPostInfo;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.data.IPostInfo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class PostInfoGettersTest {
 
 	@Before
 	public void setUp() throws Exception {
-		postInfo = IoCAdapter.getInstance().getIPostInfoObject();
+		postInfo = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
 		postInfo.setParams(id, date, commentsCount, likesCount, repostsCount);
 	}
 

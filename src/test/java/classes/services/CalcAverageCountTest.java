@@ -1,7 +1,7 @@
 package classes.services;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.data.IPostInfo;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.data.IPostInfo;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,8 +15,8 @@ public class CalcAverageCountTest {
 		//Arrange
 		List<IPostInfo> postInfoList = new ArrayList<IPostInfo>();
 
-		postInfoList.add(IoCAdapter.getInstance().getIPostInfoObject());
-		postInfoList.add(IoCAdapter.getInstance().getIPostInfoObject());
+		postInfoList.add(ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class));
+		postInfoList.add(ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class));
 
 		postInfoList.get(0).setParams(1, 1, 50, 260, 800);
 		postInfoList.get(1).setParams(2, 2, 250, 140, 100);
@@ -30,7 +30,7 @@ public class CalcAverageCountTest {
 		long[] repostsCount = new long[7];
 
 		//Act
-		CalcAverageCountMenager.calcAverageCount(postInfoList, commentsCount,
+		CalcAverageCountManager.calcAverageCount(postInfoList, commentsCount,
 				likesCount, repostsCount);
 
 		//Assert
@@ -44,8 +44,8 @@ public class CalcAverageCountTest {
 		//Arrange
 		List<IPostInfo> postInfoList = new ArrayList<IPostInfo>();
 
-		postInfoList.add(IoCAdapter.getInstance().getIPostInfoObject());
-		postInfoList.add(IoCAdapter.getInstance().getIPostInfoObject());
+		postInfoList.add(ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class));
+		postInfoList.add(ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class));
 
 		postInfoList.get(0).setParams(1, 1, 50, 200, 500);
 		postInfoList.get(1).setParams(2, 75600000, 250, 200, 400);
@@ -59,7 +59,7 @@ public class CalcAverageCountTest {
 		long[] repostsCount = new long[7];
 
 		//Act
-		CalcAverageCountMenager.calcAverageCount(postInfoList, commentsCount,
+		CalcAverageCountManager.calcAverageCount(postInfoList, commentsCount,
 				likesCount, repostsCount);
 
 		//Assert

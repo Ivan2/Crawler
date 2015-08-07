@@ -1,4 +1,4 @@
-package interfaces_abstracts.db;
+package abstractions.db;
 
 public interface IDB {
 

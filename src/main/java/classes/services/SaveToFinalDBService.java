@@ -1,65 +1,53 @@
 package classes.services;
 
+import abstractions.data.IPostInfo;
+import abstractions.date.IDateTime;
+import abstractions.db.FinalDB;
+import abstractions.db.IntermediateDB;
+import abstractions.queue.IQueue;
+import abstractions.services.Service;
 import classes.crawler.Control;
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.data.IPostInfo;
-import interfaces_abstracts.date.IDateTime;
-import interfaces_abstracts.db.FinalDB;
-import interfaces_abstracts.db.IntermediateDB;
-import interfaces_abstracts.services.Service;
+import classes.service_locator.ServiceLocatorAdapter;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public class SaveToFinalDBService extends Service {
 
 	private IntermediateDB intermediateDB;
 	private FinalDB finalDB;
 
-	public SaveToFinalDBService(IntermediateDB intermediateDB,
-	                            FinalDB finalDB, String rabbitMQHost,
-	                            String consumerQName, String producerQName)
-			throws TimeoutException, IOException {
+	public SaveToFinalDBService(IntermediateDB intermediateDB, FinalDB finalDB,
+	                            IQueue consumerQueue, IQueue producerQueue) {
 
-		super(rabbitMQHost, consumerQName, producerQName);
+		super(consumerQueue, producerQueue);
 		this.intermediateDB = intermediateDB;
 		this.finalDB = finalDB;
 		start();
 	}
 
 	@Override
-	public void run() {
-		while (true) {
+	protected void threadBody() {
+		List<IPostInfo> postInfoList = intermediateDB.getPostInfoList();
 
-			List<IPostInfo> postInfoList = intermediateDB.getPostInfoList();
+		long[] averageCommentsCountOfDayOfWeek = new long[7];
+		long[] averageLikesCountOfDayOfWeek = new long[7];
+		long[] averageRepostsCountOfDayOfWeek = new long[7];
 
-			long[] averageCommentsCountOfDayOfWeek = new long[7];
-			long[] averageLikesCountOfDayOfWeek = new long[7];
-			long[] averageRepostsCountOfDayOfWeek = new long[7];
+		CalcAverageCountManager.calcAverageCount(postInfoList,
+				averageCommentsCountOfDayOfWeek,
+				averageLikesCountOfDayOfWeek,
+				averageRepostsCountOfDayOfWeek);
 
-			CalcAverageCountMenager.calcAverageCount(postInfoList,
-					averageCommentsCountOfDayOfWeek,
-					averageLikesCountOfDayOfWeek,
-					averageRepostsCountOfDayOfWeek);
+		saveAverageDataToDB(averageCommentsCountOfDayOfWeek,
+				averageLikesCountOfDayOfWeek, averageRepostsCountOfDayOfWeek);
 
-			saveAverageDataToDB(averageCommentsCountOfDayOfWeek,
-					averageLikesCountOfDayOfWeek, averageRepostsCountOfDayOfWeek);
+		saveInfoToDB(postInfoList.size());
 
-			saveInfoToDB(postInfoList.size());
-
-			try {
-				Thread.sleep(600000);
-			} catch (InterruptedException e) {
-				Control.log(e.toString());
-			}
+		try {
+			Thread.sleep(600000);
+		} catch (InterruptedException e) {
+			Control.error(getClass().getName(), e.toString());
 		}
-	}
-
-	@Override
-	public Service copyService() throws TimeoutException, IOException {
-		return new SaveToFinalDBService(intermediateDB, finalDB, rabbitMQHost,
-				consumerQName, producerQName);
 	}
 
 	private void saveAverageDataToDB(long[] averageCommentsCountOfDayOfWeek,
@@ -80,7 +68,7 @@ public class SaveToFinalDBService extends Service {
 	}
 
 	private void saveInfoToDB(long postCount) {
-		IDateTime dateTime = IoCAdapter.getInstance().getIDateTimeObject();
+		IDateTime dateTime = ServiceLocatorAdapter.getInstance().getObject(IDateTime.class);
 		String now = dateTime.now();
 
 		int updateCount = finalDB.setUpdateInfo(now);
@@ -91,8 +79,14 @@ public class SaveToFinalDBService extends Service {
 		if (updateCount == 0)
 			finalDB.addPostCountInfo(postCount);
 
-		Control.log("Save info to final DB. Date: "+now+". PostCount: "+postCount);
+		Control.info(getClass().getName(), "Save info to final DB. Date: "
+				+ now + ". PostCount: " + postCount);
 	}
 
+	@Override
+	public Service copyService() {
+		return new SaveToFinalDBService(intermediateDB, finalDB, consumerQueue,
+				producerQueue);
+	}
 
 }

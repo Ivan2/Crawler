@@ -1,6 +1,6 @@
-package interfaces_abstracts.db;
+package abstractions.db;
 
-import interfaces_abstracts.data.IPostInfo;
+import abstractions.data.IPostInfo;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package interfaces_abstracts.data;
+package abstractions.data;
 
 public interface IPostInfo {
 

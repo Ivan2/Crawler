@@ -1,9 +1,9 @@
 package classes.db;
 
 import classes.crawler.Control;
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.data.IPostInfo;
-import interfaces_abstracts.db.IntermediateDB;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.data.IPostInfo;
+import abstractions.db.IntermediateDB;
 
 import java.sql.*;
 import java.util.LinkedList;
@@ -28,9 +28,9 @@ public class IntermediatePostgresQLDB extends IntermediateDB {
 			statement = connection.createStatement();
 
 		} catch (ClassNotFoundException e){
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 		} catch (SQLException e){
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 		}
 	}
 
@@ -48,7 +48,7 @@ public class IntermediatePostgresQLDB extends IntermediateDB {
 			return result;
 
 		} catch (SQLException e) {
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 		}
 		return null;
 	}
@@ -78,7 +78,7 @@ public class IntermediatePostgresQLDB extends IntermediateDB {
 			return updateCount;
 
 		} catch (SQLException e) {
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 		}
 
 		return 0;
@@ -97,7 +97,7 @@ public class IntermediatePostgresQLDB extends IntermediateDB {
 			statement.executeUpdate(insertTableSQL);
 
 		} catch (SQLException e) {
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 		}
 	}
 
@@ -117,13 +117,13 @@ public class IntermediatePostgresQLDB extends IntermediateDB {
 				long likesCount = set.getLong("likes_count");
 				long repostsCount = set.getLong("reposts_count");
 
-				IPostInfo postInfo = IoCAdapter.getInstance().getIPostInfoObject();
+				IPostInfo postInfo = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
 				postInfo.setParams(id, date, commentsCount, likesCount, repostsCount);
 				result.add(postInfo);
 			}
 
 		} catch (SQLException e) {
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 		}
 
 		return result;

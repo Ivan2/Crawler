@@ -1,9 +1,9 @@
 package classes.settings;
 
 import classes.crawler.Control;
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.settings.ISettings;
-import interfaces_abstracts.settings.ISettingsLoadManager;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.settings.ISettings;
+import abstractions.settings.ISettingsLoadManager;
 
 import java.io.*;
 
@@ -14,7 +14,7 @@ public class SettingsLoadManagerFromFile implements ISettingsLoadManager {
 	public ISettings loadSettings() {
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader
-					(new FileInputStream(FILE_NAME)));
+					(new FileInputStream(System.getProperty("user.dir")+"/"+FILE_NAME)));
 
 			String intermediateDBName = br.readLine();
 			String intermediateDBUserName = br.readLine();
@@ -28,7 +28,7 @@ public class SettingsLoadManagerFromFile implements ISettingsLoadManager {
 			String finalDBPort = br.readLine();
 			String rabbitMQHost = br.readLine();
 
-			ISettings settings = IoCAdapter.getInstance().getISettingsObject();
+			ISettings settings = ServiceLocatorAdapter.getInstance().getObject(ISettings.class);
 			settings.setParams(
 					intermediateDBName, intermediateDBUserName,
 					intermediateDBPassword, intermediateDBHost,
@@ -39,10 +39,10 @@ public class SettingsLoadManagerFromFile implements ISettingsLoadManager {
 			return settings;
 
 		} catch (FileNotFoundException e) {
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 			return null;
 		} catch (IOException e) {
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 			return null;
 		}
 	}

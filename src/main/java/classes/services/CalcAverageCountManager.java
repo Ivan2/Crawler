@@ -1,10 +1,10 @@
 package classes.services;
 
-import interfaces_abstracts.data.IPostInfo;
+import abstractions.data.IPostInfo;
 
 import java.util.List;
 
-public class CalcAverageCountMenager {
+public class CalcAverageCountManager {
 
 	public static void calcAverageCount(List<IPostInfo> postInfoList,
 	                             long[] averageCommentsCountOfDayOfWeek,

@@ -1,47 +1,46 @@
 package classes.services;
 
+import abstractions.db.IntermediateDB;
+import abstractions.queue.IQueue;
+import abstractions.services.Service;
 import classes.crawler.Control;
-import interfaces_abstracts.db.IntermediateDB;
-import interfaces_abstracts.services.Service;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public class LoadIDFromDBService extends Service {
 
 	private IntermediateDB db;
 
-	public LoadIDFromDBService(IntermediateDB db, String rabbitMQHost, String consumerQName,
-			String producerQName) throws TimeoutException, IOException{
+	public LoadIDFromDBService(IntermediateDB db, IQueue consumerQueue,
+	                           IQueue producerQueue) {
 
-		super(rabbitMQHost, consumerQName, producerQName);
+		super(consumerQueue, producerQueue);
 		this.db = db;
 		start();
 	}
 
 	@Override
-	public void run() {
-		while (true) {
-			try {
-				List<String> id = db.getIDList();
+	protected void threadBody() {
+		try {
+			List<String> id = db.getIDList();
 
-				Control.log("Load idList: " + id);
+			Control.info(getClass().getName(), "Load idList: " + id);
 
-				for (String str : id)
-					producerChannel.basicPublish("", producerQName, null,
-							str.getBytes());
-				Thread.sleep(600000);
+			for (String str : id)
+				producerQueue.sendMessage(str.getBytes());
+			Thread.sleep(600000);
 
-			} catch (InterruptedException e) {
-				Control.log(e.toString());
-			} catch (IOException e) {
-				Control.log(e.toString());
-			}
+		} catch (InterruptedException e) {
+			Control.error(getClass().getName(), e.toString());
+		} catch (IOException e) {
+			Control.error(getClass().getName(), e.toString());
 		}
 	}
 
-	public Service copyService() throws TimeoutException, IOException {
-		return new LoadIDFromDBService(db, rabbitMQHost, consumerQName, producerQName);
+	@Override
+	public Service copyService() {
+		return new LoadIDFromDBService(db, consumerQueue, producerQueue);
 	}
+
 }

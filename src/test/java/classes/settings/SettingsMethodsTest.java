@@ -1,7 +1,7 @@
 package classes.settings;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.settings.ISettings;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.settings.ISettings;
 import org.junit.Assert;
 
 public class SettingsMethodsTest {
@@ -22,7 +22,7 @@ public class SettingsMethodsTest {
 
 	@org.junit.Before
 	public void setUp() throws Exception {
-		settings = IoCAdapter.getInstance().getISettingsObject();
+		settings = ServiceLocatorAdapter.getInstance().getObject(ISettings.class);
 		settings.setParams(
 				intermediateDBName, intermediateDBUserName,
 				intermediateDBPassword, intermediateDBHost, intermediateDBPort,

@@ -1,6 +1,6 @@
 package classes.data;
 
-import interfaces_abstracts.data.IPostInfo;
+import abstractions.data.IPostInfo;
 
 import java.io.*;
 import java.util.Calendar;

@@ -1,4 +1,4 @@
-package interfaces_abstracts.vk;
+package abstractions.vk;
 
 public interface IVkLoader {
 

@@ -1,52 +1,54 @@
 package classes.services;
 
+import abstractions.queue.IMessage;
+import abstractions.queue.IQueue;
+import abstractions.services.Service;
+import abstractions.vk.IVkWallLoader;
 import classes.crawler.Control;
-import classes.ioc.IoCAdapter;
-import com.rabbitmq.client.QueueingConsumer;
-import interfaces_abstracts.services.Service;
-import interfaces_abstracts.vk.IVkWallLoader;
+import classes.service_locator.ServiceLocatorAdapter;
 
 import java.io.IOException;
-import java.util.concurrent.TimeoutException;
 
 public class LoadWallFromVkService extends Service {
 
 	private IVkWallLoader vkWallLoader;
 
-	public LoadWallFromVkService(String rabbitMQHost, String consumerQName,
-			String producerQName) throws TimeoutException, IOException {
-
-		super(rabbitMQHost, consumerQName, producerQName);
-		vkWallLoader = IoCAdapter.getInstance().getIVkWallLoaderObject();
+	public LoadWallFromVkService(IQueue consumerQueue, IQueue producerQueue) {
+		super(consumerQueue, producerQueue);
+		vkWallLoader = ServiceLocatorAdapter.getInstance().getObject(IVkWallLoader.class);
 		start();
 	}
 
 	@Override
-	public void run() {
-		while (true) {
-			try {
-				QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-				String id = new String(delivery.getBody());
+	protected void threadBody() {
+		try {
+			IMessage message = consumerQueue.receiveMessage();
+			String id = new String(message.getBytes());
 
-				String wall = vkWallLoader.loadWall(id);
+			String wall = vkWallLoader.loadWall(id);
 
-				Control.log("Load wall by id: " + id);
-
-				producerChannel.basicPublish("", producerQName, null,
-						wall.getBytes());
-
-				consumerChannel.basicAck(delivery.getEnvelope().getDeliveryTag(),
-						false);
-
-			} catch (InterruptedException e) {
-				Control.log(e.toString());
-			} catch (IOException e) {
-				Control.log(e.toString());
+			if (wall == "") {
+				consumerQueue.rejectMessage(message.getTag());
+				Control.error(getClass().getName(), "Error load wall by id: " + id);
+				return;
 			}
+
+			Control.info(getClass().getName(), "Load wall by id: " + id);
+
+			producerQueue.sendMessage(wall.getBytes());
+
+			consumerQueue.ackMessage(message.getTag());
+
+		} catch (InterruptedException e) {
+			Control.error(getClass().getName(), e.toString());
+		} catch (IOException e) {
+			Control.error(getClass().getName(), e.toString());
 		}
 	}
 
-	public Service copyService() throws TimeoutException, IOException {
-		return new LoadWallFromVkService(rabbitMQHost, consumerQName, producerQName);
+	@Override
+	public Service copyService() {
+		return new LoadWallFromVkService(consumerQueue, producerQueue);
 	}
+
 }

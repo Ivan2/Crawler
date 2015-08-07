@@ -1,8 +1,8 @@
 package classes.vk;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.data.IPostInfo;
-import interfaces_abstracts.json.IJSONParser;
+import classes.service_locator.ServiceLocatorAdapter;
+import abstractions.data.IPostInfo;
+import abstractions.json.IJSONParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,7 +26,7 @@ public class JSONWallParser implements IJSONParser{
 			long likesCount = post.getJSONObject("likes").getLong("count");
 			long repostsCount = post.getJSONObject("reposts").getLong("count");
 
-			result[i] = IoCAdapter.getInstance().getIPostInfoObject();
+			result[i] = ServiceLocatorAdapter.getInstance().getObject(IPostInfo.class);
 			result[i].setParams(id, date, commentsCount, likesCount, repostsCount);
 		}
 

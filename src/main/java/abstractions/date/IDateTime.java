@@ -1,4 +1,4 @@
-package interfaces_abstracts.date;
+package abstractions.date;
 
 public interface IDateTime {
 

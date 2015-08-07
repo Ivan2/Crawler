@@ -1,4 +1,4 @@
-package interfaces_abstracts.settings;
+package abstractions.settings;
 
 public interface ISettings {
 

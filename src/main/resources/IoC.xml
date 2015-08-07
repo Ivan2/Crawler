@@ -13,7 +13,7 @@
           scope="prototype"/>
 
     <bean id="FinalDB"
-          class="classes.db.FinalPostgresQLDB"
+          class="classes.db.FinalPostgresQLDB_OS"
           scope="singleton"/>
 
     <bean id="IntermediateDB"
@@ -22,6 +22,10 @@
 
     <bean id="IJSONParser"
           class="classes.vk.JSONWallParser"
+          scope="prototype"/>
+
+    <bean id="IDBConnectionControl"
+          class="classes.openshift.DBConnectionControl"
           scope="prototype"/>
 
     <bean id="IServices"

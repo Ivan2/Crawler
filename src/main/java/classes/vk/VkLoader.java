@@ -1,7 +1,7 @@
 package classes.vk;
 
 import classes.crawler.Control;
-import interfaces_abstracts.vk.IVkLoader;
+import abstractions.vk.IVkLoader;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,7 +24,7 @@ public class VkLoader implements IVkLoader {
 			}
 
 		} catch (IOException e){
-			Control.log(e.toString());
+			Control.error(getClass().getName(), e.toString());
 		}
 
 		return result;

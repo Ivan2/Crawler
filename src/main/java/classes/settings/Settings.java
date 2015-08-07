@@ -1,6 +1,6 @@
 package classes.settings;
 
-import interfaces_abstracts.settings.ISettings;
+import abstractions.settings.ISettings;
 
 public class Settings implements ISettings {
 

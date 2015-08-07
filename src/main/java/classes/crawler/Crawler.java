@@ -1,27 +1,22 @@
 package classes.crawler;
 
-import classes.ioc.IoCAdapter;
-import interfaces_abstracts.services.IServices;
-import interfaces_abstracts.settings.ISettings;
-import interfaces_abstracts.settings.ISettingsLoadManager;
+import abstractions.services.IServices;
+import abstractions.settings.ISettingsLoadManager;
+import classes.service_locator.ServiceLocatorAdapter;
 
 public class Crawler {
 
 	public static void main(String[] args) {
-		IServices services = IoCAdapter.getInstance().getIServicesObject();
+		IServices services = ServiceLocatorAdapter.getInstance().getObject(IServices.class);
 
 		new Control(services);
 
 		ISettingsLoadManager settingsLoadManager =
-				IoCAdapter.getInstance().getISettingsLoadManagerObject();
-		ISettings settings = settingsLoadManager.loadSettings();
-
-		String port = PortForwardManager.createConnection();
-		Control.log("port = " + port);
-
-		settings.setFinalDBPort(port);
+				ServiceLocatorAdapter.getInstance().getObject(ISettingsLoadManager.class);
+		settingsLoadManager.loadSettings();
 
 		services.createServices();
 	}
+
 
 }
