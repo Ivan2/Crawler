@@ -7,11 +7,17 @@
 	<packaging>war</packaging>
 	<version>1.0</version>
 	<name>crawler</name>
+
+	<build>
+		<defaultGoal>package</defaultGoal>
+	</build>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.6</maven.compiler.source>
 		<maven.compiler.target>1.6</maven.compiler.target>
 	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.jboss.spec</groupId>
@@ -34,6 +40,7 @@
 	      <version>9.1-901.jdbc4</version>
 	    </dependency>
 	</dependencies>
+
 	<profiles>
 		<profile>
 		<!-- When built in OpenShift the 'openshift' profile will be used when invoking mvn. -->
